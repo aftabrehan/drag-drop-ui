@@ -14,6 +14,7 @@ button.onclick = () => {
 input.addEventListener("change", function () {
   file = this.files[0];
   dropArea.classList.add("active");
+  displayFile();
 });
 
 // when file is inside drag area
@@ -38,9 +39,28 @@ dropArea.addEventListener("drop", (event) => {
 
   file = event.dataTransfer.files[0]; // grab single file even of user selects multiple files
   // console.log(file);
+  displayFile();
 });
 
 function displayFile() {
   let fileType = file.type;
   // console.log(fileType);
+
+  let validExtensions = ["image/jpeg", "image/jpg", "image/png"];
+
+  if (validExtensions.includes(fileType)) {
+    // console.log('This is an image file');
+    let fileReader = new FileReader();
+
+    fileReader.onload = () => {
+      let fileURL = fileReader.result;
+      // console.log(fileURL);
+      let imgTag = `<img src="${fileURL}" alt="">`;
+      dropArea.innerHTML = imgTag;
+    };
+    fileReader.readAsDataURL(file);
+  } else {
+    alert("This is not an Image File");
+    dropArea.classList.remove("active");
+  }
 }
